@@ -10,6 +10,11 @@ from fastapi import FastAPI, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from fastapi.responses import Response
+
+@app.get("/favicon.ico")
+async def favicon():
+    return Response(status_code=204)
 
 async def generate_answer(question, chunks):
     return {"answer": f"Answer to: '{question}' (dummy)"}
@@ -154,5 +159,6 @@ async def summarize_endpoint(body: SummarizeRequest, request: Request):
     if token != API_TOKEN:
         raise HTTPException(401, "Unauthorized")
     return {"summaries": [rule_based_summary(c) for c in body.clauses]}
+
 
 
