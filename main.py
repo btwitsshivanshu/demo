@@ -31,9 +31,11 @@ app = FastAPI(title="HackRX Railway-Ready API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
                    allow_methods=["*"], allow_headers=["*"])
 #app.mount("/ui", StaticFiles(directory="ui"), name="ui")
-@app.get("/favicon.ico")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    return Response(status_code=204)
+    return RedirectResponse(url="/static/favicon.ico")
 
 
 doc_store: dict[str, str] = {}
@@ -160,6 +162,7 @@ async def summarize_endpoint(body: SummarizeRequest, request: Request):
     if token != API_TOKEN:
         raise HTTPException(401, "Unauthorized")
     return {"summaries": [rule_based_summary(c) for c in body.clauses]}
+
 
 
 
