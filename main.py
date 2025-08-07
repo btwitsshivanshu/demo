@@ -12,9 +12,6 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from fastapi.responses import Response
 
-@app.get("/favicon.ico")
-async def favicon():
-    return Response(status_code=204)
 
 async def generate_answer(question, chunks):
     return {"answer": f"Answer to: '{question}' (dummy)"}
@@ -34,6 +31,10 @@ app = FastAPI(title="HackRX Railway-Ready API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True,
                    allow_methods=["*"], allow_headers=["*"])
 #app.mount("/ui", StaticFiles(directory="ui"), name="ui")
+@app.get("/favicon.ico")
+async def favicon():
+    return Response(status_code=204)
+
 
 doc_store: dict[str, str] = {}
 
@@ -159,6 +160,7 @@ async def summarize_endpoint(body: SummarizeRequest, request: Request):
     if token != API_TOKEN:
         raise HTTPException(401, "Unauthorized")
     return {"summaries": [rule_based_summary(c) for c in body.clauses]}
+
 
 
 
